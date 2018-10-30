@@ -1,0 +1,39 @@
+// @import "node_modules/bootstrap-sass/assets/stylesheets/bootstrap";
+
+#logo {
+    width: 30px;
+    height: 30px;
+}
+
+.product {
+    .price {
+        text-align: right;
+        height: max-content;
+        border: 1px solid;
+        padding: 0 10px;
+    }
+
+    .row {
+        margin-bottom: 20px;
+    }
+}
+
+// Backoffice CSS
+.backoffice {
+    .navbar-default {
+        background-color: #6eb9c6;
+
+        .navbar-nav>li>a {
+            color: #fff;
+        }
+    }
+
+    .preview_form {
+        padding: 0 10px;
+
+        .img-thumbnail {
+            max-width: 250px;
+            max-height: 250px;
+        }
+    }
+}

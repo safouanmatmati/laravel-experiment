@@ -1,0 +1,17 @@
+Dockerfile
+docker-compose.yml
+
+.gitignore
+.git/
+
+*.md
+
+*.env
+
+.editorconfig
+
+storage/app/**
+storage/framework/cache/**
+storage/framework/sessions/**
+storage/framework/views/**
+storage/logs/**
