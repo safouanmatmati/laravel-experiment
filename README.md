@@ -45,14 +45,15 @@
 
 ```
 git clone https://github.com/safouanmatmati/laravel-experiment.git
-cd shop/
+cd laravel-experiment/
 ```
 
 #### Define an administrator
 
 Open ".env" file and edit ADMIN_\* variables with user admin access you want.
-This user will be created later.(cf *Generate contents*)
+This user will be created later.(cf *Generate contents*).
 
+Open a new terminal
 #### Build images
 ```
 docker-compose build
@@ -69,9 +70,22 @@ docker volume create shop_cache_data
 ```
 docker-compose up -d
 ```
+
 #### Generate contents
+Open another terminal and go to source folder
+```
+docker-compose logs -f --tail=100 application
+```
+Wait until the end of application vendors. In the first terminal
 ```
 docker-compose exec application composer run-script post-create-project-cmd
 ```
+The project is ready to be used.
+
 ## Usage
+
+Open a terminal
+```
+docker-compose up -d
+```
 Visits [http://localhost:8081](http://localhost:8081).
