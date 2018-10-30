@@ -1,0 +1,96 @@
+version:           '3.7'
+
+services:
+  application:
+    image:         ${DOCKER_TAG_BASE_NAME}/php
+    build:
+      context:     ./
+      target:      php
+      cache_from:
+        - ${DOCKER_TAG_BASE_NAME}/php
+        - ${DOCKER_TAG_BASE_NAME}/nginx
+    depends_on:
+      - database
+    volumes:
+      # Sync data
+      - .:/srv/shop:rw,cached
+    expose:
+      - 9000
+    networks:
+      - shop_network
+
+  server:
+    image:         ${DOCKER_TAG_BASE_NAME}/nginx
+    build:
+      context:     ./
+      target:      nginx
+      cache_from:
+        - ${DOCKER_TAG_BASE_NAME}/php
+        - ${DOCKER_TAG_BASE_NAME}/nginx
+    depends_on:
+      - application
+    volumes:
+      # Sync data
+      - ./public:/srv/shop/public:ro
+    ports:
+      - "8081:80"
+    networks:
+      - shop_network
+
+  cache:
+    image:         ${DOCKER_TAG_BASE_NAME}/redis
+    build:
+      context:     ./
+      target:      redis
+      cache_from:
+        - ${DOCKER_TAG_BASE_NAME}/redis
+    depends_on:
+      - application
+    volumes:
+      # Persist data
+      - shop_cache_data:/data:rw
+    expose:
+      - 6379
+    networks:
+      - shop_network
+
+  node:
+    image:         ${DOCKER_TAG_BASE_NAME}/node
+    build:
+      context:     ./
+      cache_from:
+        - ${DOCKER_TAG_BASE_NAME}/node
+    volumes:
+      # Sync for "gulp watch"
+      - '.:/srv/shop:rw'
+      # Persist node modules
+      - '/srv/shop/node_modules'
+    expose:
+      - 3000
+
+  database:
+    image:         ${DOCKER_TAG_BASE_NAME}/mysql
+    build:
+      context:     ./
+      target:      mysql
+      cache_from:
+        - ${DOCKER_TAG_BASE_NAME}/mysql
+    env_file:
+      .env
+    volumes:
+      # Persist data
+      - shop_db_data:/var/lib/mysql:rw
+    command:       --innodb-use-native-aio=0
+    ports:
+      - "33061:3306"
+    networks:
+      - shop_network
+
+networks:
+  shop_network:
+
+volumes:
+  shop_db_data:
+    external:      true
+  shop_cache_data:
+    external:      true
